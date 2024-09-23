@@ -1,10 +1,8 @@
 # Projeto Colaborativo da Carta de Smith
-Disciplina: Ondas e Linhas
+> Disciplina: Ondas e Linhas
 
-Colaboradores:
-- Edileudo;
-- Adolfo;
-- Jales;
-- Pedro;
-- Emerson;
-- Caíque.
+## Objetivo
+Criar programa em *python* capaz de resolver todas as questões do estágio.
+
+`IMPORTANTE`:
+**Sempre manter o código organizado, com comentários detalhando o máximo que puder.**
