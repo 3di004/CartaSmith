@@ -1,12 +1,5 @@
 # Imports e Configurações ---------------------------------------------------------------------------------------------
 
-import numpy as np
-import matplotlib.pyplot as plt
-
-#Definição da classe para gerar carta
-class Carta():
-    def __init__(self):
-        pass
-
+from classeCarta import *
 
 #Criando objeto para exibição
