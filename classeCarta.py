@@ -4,6 +4,8 @@ import sympy as sp
 import numpy as np
 import random as rd
 import matplotlib.pyplot as plt
+import customtkinter as ctk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg as tkAgg
 
 j = 1j
 
@@ -119,60 +121,5 @@ class CartaSmith():
         plt.close()
         return fig, ax
     
-    # Função para plotagem do ponto
+    
 
-    def plotS(self, ponto: tuple, modo:str = "Z"):
-            if modo == 'Z':
-                fig, ax = self.impedChart()
-            fig1 = plt.figure(fig)
-            ax1 = plt.axes(ax)
-            ax.annotate('', xy=(1.06, 0), xycoords='axes fraction', xytext=(1.06, 1), arrowprops = dict(arrowstyle = "-", color = 'w', ls = (0, (4, 10))))
-            cor = 0
-            n = 1
-            
-            X, vec = ponto # unpacking the tuples
-            gamma = self.moebius(X, modo)
-            Xx = sp.re(gamma)
-            Xy = sp.im(gamma)
-            coefRefl = self.reflCoef(X, modo)
-
-            cores = ['#F66B6B', '#FF61B0', '#FFDE70', '#9CDD3B', '#49ECC6', '#5A7AED', '#8E73B2', '#FC3131', '#1EFF00', '#CBC8FF']
-            rd.shuffle(cores)
-
-            plt.plot(Xx, Xy, marker = 'o', c = cores[0], zorder = 1)
-
-            r = 1.4
-            if Xx >= 0:
-                theta = np.arctan(float(Xy/Xx))
-            elif Xx < 0:
-                theta = np.arctan(float(Xy/Xx)) + np.pi
-
-            plt.text(r*np.cos(theta), r*np.sin(theta), fr'$\mathbf{{Z}}$', c = cores[0], fontsize = 15, fontfamily = 'Cascadia Code', zorder = 1, ha = 'center', va = 'center', rotation_mode = 'anchor')
-            Yp = sp.simplify(1/X).n()
-            YpRE = round(sp.re(Yp), 3)
-            YpIM = round(sp.im(Yp), 3)
-            plt.text(1.8, 1.3 - n/10, fr"$Z = {sp.latex(X)}\,\Omega$", c = cores[0], fontsize = 11)
-            plt.text(1.8, 1.3 - (n+1)/10, fr"$Y = {sp.latex(YpRE)}{sp.latex(YpIM*j)}\,\Omega^{{-1}}$", c = cores[1], fontsize = 11)
-            plt.text(1.8, 1.3 - (n+2)/10, fr"$\Gamma = {round(coefRefl[0], 3)} \angle {round(coefRefl[1], 3)}^{{\circ}}$", c = cores[2], fontsize = 11)
-            Ymoeb = self.moebius(Yp, 'Y')
-            plt.plot(sp.re(Ymoeb), sp.im(Ymoeb), marker = 'o', c = cores[1])
-            plt.text(-r*np.cos(theta), -r*np.sin(theta), fr'$\mathbf{{Y}}$', c = cores[1], fontsize = 15, fontfamily = 'Cascadia Code', zorder = 1, ha = 'center', va = 'center', rotation_mode = 'anchor')
-
-            #Coeficiente de onda estacionária
-            self.ci((0,0), (coefRefl[0]), (0, 360), cores[3])
-            s = (1 + abs(coefRefl[0]))/(1 - abs(coefRefl[0]))
-            plt.plot(self.moebius(s*self.Z0), 0, marker = 'o', c = cores[3])
-            plt.text(1.8, 1.3 - (n+3)/10, fr"$s = SWR = {round(s, 3)}$", c = cores[3], fontsize = 11)
-            zvmax = s
-            zvmin = 1/s
-            plt.text(1.8, 1.3 - (n+4)/10, fr"$z_{{Vmax}} = SWR = {round(zvmax, 3)}$", c = cores[4], fontsize = 11)
-            plt.text(1.8, 1.3 - (n+5)/10, fr"$z_{{Vmin}} = \dfrac{{1}}{{SWR}} = {round(zvmin, 3)}$", c = cores[5], fontsize = 11)
-
-            self.textCi((0,0), 1.15, '', coefRefl[1], 1, True, True, 2, cores[0], True, 2.5)
-
-            if vec:
-                plt.quiver(0, 0, float(Xx), float(Xy), scale = 1, angles = 'xy', scale_units = 'xy', facecolor = cores[0], zorder = 1)
-                plt.quiver(0, 0, (float(sp.re(Ymoeb))), float(sp.im(Ymoeb)), scale = 1, angles = 'xy', scale_units = 'xy', facecolor = cores[1], zorder = 1)
-
-            fig.savefig("OutputChart.jpg", dpi = 600, bbox_inches = 'tight')
-            plt.show()
