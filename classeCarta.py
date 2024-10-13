@@ -47,24 +47,22 @@ class CartaSmith():
             yN = (y - yc) * (1 + tamL*0.02)
             plt.plot([x, xN], [y, yN], c = corL, linewidth = lwd)
 
-    def moebius(self, X, mode: str = 'Z'): #Moebius Transformation
-        if mode == 'Z':
-            gamma = ((X - self.Z0)/(X + self.Z0))
-        elif mode == 'Y':
-            Y0 = 1/self.Z0
-            gamma = ((X - Y0)/(X + Y0))
+    # Fórmulas
+
+    def moebius(self, Z): #Transformada de Moebius
+        gamma = ((Z - self.Z0)/(Z + self.Z0))
         return sp.simplify(gamma)
     
-    # Função para o cálculo do coeficiente de reflexão
-
-    def reflCoef(self, X, mode: str = 'Z') -> tuple:
-        gamma = self.moebius(X)
+    def reflCoef(self, Z) -> tuple: #Coeficiente de Reflexão
+        gamma = self.moebius(Z)
         gammaRe = float(sp.re(gamma))
         gammaIm = float(sp.im(gamma))
         gammaC = np.sqrt(gammaRe**2 + gammaIm**2)
         ang = (np.arctan(gammaIm/gammaRe)) * (180/np.pi)
         return (gammaC, ang)
-        
+
+
+
     # Diagrama de impedância. Retorna a figura e os axes da carta de smith
 
     def impedChart(self):
@@ -120,6 +118,3 @@ class CartaSmith():
 
         plt.close()
         return fig, ax
-    
-    
-
